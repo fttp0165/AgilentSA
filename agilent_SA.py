@@ -49,12 +49,17 @@ class AgilentSA(Freq):
         self.instr=instr
     
 
+def main():
+    new_instr = AgilentSA(inst)
+    new_instr.centFreq("5200")
+    print(float(new_instr.getStartFreq()))
+    print("getCentFreq:", float(new_instr.getCentFreq()),"Hz")
+    print("getStartFreq:", float(new_instr.getStartFreq()),"Hz")
+    print("getStopFreq:", float(new_instr.getStopFreq()),"Hz")
 
-new_instr = AgilentSA(inst)
-new_instr.centFreq("5200")
-print(type(new_instr.getStartFreq()))
-print("getCentFreq:", format(new_instr.getCentFreq(),"5f.4"))
-print("getStartFreq:", new_instr.getStartFreq())
-print("getStopFreq:", new_instr.getStopFreq())
+
+if __name__ == '__main__':
+    main()
+
 
 
