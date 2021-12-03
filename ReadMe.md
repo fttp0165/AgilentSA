@@ -1,4 +1,4 @@
-# Agilent SA N9010A  SPI
+# Agilent SA N9010A  API
 
 
 ##ANALYZER SETUP
