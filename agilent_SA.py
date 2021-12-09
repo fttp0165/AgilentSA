@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 rm = pyvisa.ResourceManager()
 current_instr = "GPIB0::21::INSTR"
 # class
-inst = rm.open_resource(current_instr)
+inst = rm.open_resource(current_instr,send_end=False)
 
 
 # def centFreq(inst,Freq,unit="MHz"):
@@ -104,12 +104,25 @@ class Fetch:
     def __init__(self):
         pass
 
-    def fetchData(self):
-        responce = self.instr.query("FETC:SAN1?")
+    def fetchData(self): 
+    #
+    #FETC:SAN1?
+        self.instr.timeout = 550000
+        responce = self.instr.write("CALC: DATA?")
+        responce = self.instr.read()
+        return responce
+
+class TraceDetector:
+    def __init__(self):
+        pass
+
+    def setTraceType(self, trace='1', traceType='AVER'):
+        #trace={1...6} traceType=WRIT or AVER or MAXH ot MINH 
+        responce = self.instr.query("TRAC{}:TYPE {}".format(trace,traceType))
         return responce
 
 
-class AnalyzerSetUp(Freq, Span, Amptd, Fetch):
+class AnalyzerSetUp(Freq, Span, Amptd, Fetch, TraceDetector):
     def __init__(self, instr):
         self.instr = instr
 
@@ -133,11 +146,12 @@ def main():
     new_instr.setMechAtten('10')
     print("getAttenuationStatus(1:ON,0:OFF):", new_instr.getMechAttenAuto())
     print("getAttenuation:", float(new_instr.getMechAtten()), "dB")
+    new_instr.setTraceType()
     # new_instr.setMechAttenAuto()
     # print("getAttenuationStatus(1:ON,0:OFF):", new_instr.getMechAttenAuto())
     # print("getAttenuation:", float(new_instr.getMechAtten()), "dB")
-    trace = new_instr.fetchData().split(",")
-
+    trace = new_instr.fetchData()
+    print(trace)
     amp = trace[1::2]
     freq = trace[::2]
     newFreq = []
@@ -173,7 +187,6 @@ def main():
     ax.plot(newFreq, newAmp)
     ax.plot(newFreq, limitLine, color='red')
     plt.show()
-
 
 if __name__ == '__main__':
     main()
