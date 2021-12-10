@@ -9,8 +9,8 @@ inst = rm.open_resource(current_instr,send_end=False)
 
 
 # def centFreq(inst,Freq,unit="MHz"):
-#     responce=inst.write("FREQ:CENT " + Freq + "MHZ")
-#     print(responce)
+#     response=inst.write("FREQ:CENT " + Freq + "MHZ")
+#     print(response)
 
 # centFreq(inst,"5200")
 
@@ -20,33 +20,33 @@ class Freq:
     #set SA centFreq
 
     def cent_freq(self, Freq, unit="MHz"):
-        responce = self.instr.write("FREQ:CENT " + Freq + unit)
-        return responce
+        response = self.instr.write("FREQ:CENT " + Freq + unit)
+        return response
     #set SA startFreq
 
     def start_freq(self, Freq, unit="MHz"):
-        responce = self.instr.write("FREQ:START " + Freq + unit)
-        return responce
+        response = self.instr.write("FREQ:START " + Freq + unit)
+        return response
     #set SA stopFreq
 
     def stop_freq(self, Freq, unit="MHz"):
-        responce = self.instr.write("FREQ:STOP " + Freq + unit)
-        return responce
+        response = self.instr.write("FREQ:STOP " + Freq + unit)
+        return response
     #get SA CentFreq
 
     def get_cent_freq(self):
-        responce = self.instr.query("FREQ:CENT?")
-        return responce
+        response = self.instr.query("FREQ:CENT?")
+        return response
     #get SA StartFreq
 
     def get_start_freq(self):
-        responce = self.instr.query("FREQ:START?")
-        return responce
+        response = self.instr.query("FREQ:START?")
+        return response
     #get SA StopFreq
 
     def get_stop_freq(self):
-        responce = self.instr.query("FREQ:STOP?")
-        return responce
+        response = self.instr.query("FREQ:STOP?")
+        return response
 
 
 class Span:
@@ -55,18 +55,18 @@ class Span:
 
     #set SA SPAN
     def set_span(self, Freq, unit="MHz"):
-        responce = self.instr.write("FREQ:SPAN " + Freq + unit)
-        return responce
+        response = self.instr.write("FREQ:SPAN " + Freq + unit)
+        return response
 
     #get SA SPAN
     def get_span(self):
-        responce = self.instr.query("FREQ:SPAN?")
-        return responce
+        response = self.instr.query("FREQ:SPAN?")
+        return response
 
     #get SA SPAN
     def set_full_span(self):
-        responce = self.instr.write("FREQ:SPAN:FULL")
-        return responce
+        response = self.instr.write("FREQ:SPAN:FULL")
+        return response
 
 
 class Amptd:
@@ -74,30 +74,30 @@ class Amptd:
         self.instr = instr
 
     def set_ref_leve(self, Amp, unit="dBm"):
-        responce = self.instr.write("DISP:WIND:TRAC:Y:RLEV " + Amp + unit)
-        return responce
+        response = self.instr.write("DISP:WIND:TRAC:Y:RLEV " + Amp + unit)
+        return response
 
     def get_ref_leve(self):
-        responce = self.instr.query("DISP:WIND:TRAC:Y:RLEV?")
-        return responce
+        response = self.instr.query("DISP:WIND:TRAC:Y:RLEV?")
+        return response
 
     #set SA Attenuation
     def set_mech_atten(self, att):
-        responce = self.instr.write("POW:ATT " + att)
-        return responce
+        response = self.instr.write("POW:ATT " + att)
+        return response
 
     #get SA Attenuation
     def get_mech_atten(self):
-        responce = self.instr.query("POW:ATT?")
-        return responce
+        response = self.instr.query("POW:ATT?")
+        return response
 
     def set_mech_attenAuto(self):
-        responce = self.instr.write("POW:ATT:AUTO 1")
-        return responce
+        response = self.instr.write("POW:ATT:AUTO 1")
+        return response
 
     def get_mech_atten_auto(self):
-        responce = self.instr.query("POW:ATT:AUTO?")
-        return responce
+        response = self.instr.query("POW:ATT:AUTO?")
+        return response
 
 
 class Fetch:
@@ -108,16 +108,16 @@ class Fetch:
     #FETC:SAN1?
         self.instr.timeout = 100000
         self.instr.read_termination = "\n"
-        responce = self.instr.query("CALC:DATA?")
-        # responce = self.instr.query("FETC:SAN1?")
-        return responce
+        response = self.instr.query("CALC:DATA?")
+        # response = self.instr.query("FETC:SAN1?")
+        return response
 
     def fetch_chp(self):
         pass
         # self.instr.timeout = 100000
         # self.instr.read_termination = "\n"
-        # responce = self.instr.query(":FETC:CHP?")
-        # return responce
+        # response = self.instr.query(":FETC:CHP?")
+        # return response
 
 
 class TraceDetector:
@@ -127,8 +127,19 @@ class TraceDetector:
     def set_trace_type(self, trace='1', traceType='AVER'):
         # trace={1...6} traceType=WRIT or AVER or MAXH ot MINH 
         #print("TRAC{}:TYPE {}".format(trace, traceType))
-        responce = self.instr.write("TRAC{}:TYPE {}".format(trace, traceType))
-        return responce
+        response = self.instr.write("TRAC{}:TYPE {}".format(trace, traceType))
+        return response
+
+    def set_detector(self, trace='1', detType='AVER'):
+        #detType = AVER ，NEG ， NORM ，POS，SAMP，QPE，EAV，RAV
+        response = self.instr.write("DET:TRAC{} {}".format(trace, detType))
+        return response
+
+    def get_detector(self, trace='1'):
+        #detType = AVER ，NEG ， NORM ，POS，SAMP，QPE，EAV，RAV
+        response = self.instr.query("DET:TRAC{}?".format(trace))
+        return response
+
 
 
 class AnalyzerSetUp(Freq, Span, Amptd, Fetch, TraceDetector):
@@ -139,7 +150,10 @@ class AnalyzerSetUp(Freq, Span, Amptd, Fetch, TraceDetector):
 class AgilentSA(AnalyzerSetUp):
     def __init__(self, instr):
         self.instr = instr
-
+    
+    def get_sa_mode(self):
+        response=self.instr.query(':CONF?')
+        return response
 
 def main():
     new_instr = AgilentSA(inst)
@@ -156,6 +170,9 @@ def main():
     print("getAttenuationStatus(1:ON,0:OFF):", new_instr.get_mech_atten_auto())
     print("getAttenuation:", float(new_instr.get_mech_atten()), "dB")
     new_instr.set_trace_type('1', 'MAXH')
+    new_instr.set_detector('1', 'AVER')
+    print('get_detector:', new_instr.get_detector())
+    print('get_detector:', new_instr.get_sa_mode())
     # new_instr.setMechAttenAuto()
     # print("getAttenuationStatus(1:ON,0:OFF):", new_instr.getMechAttenAuto())
     # print("getAttenuation:", float(new_instr.getMechAtten()), "dB")
@@ -169,18 +186,15 @@ def main():
     limitLine = []
     #print(freq)
     #print(amp)
-
     for f in freq:
         newFreq.append(float(f)/1000000)
     for a in amp:
         newAmp.append(float(a)+22)
-
     print(len(newFreq))
     print(len(newAmp))
-
-    #axs[0, 0].set_title("Signal")
-    #axs[0, 0].plot(t, s, color='C0')
-    #axs[0, 0].set_xlabel("Time")
+    # axs[0, 0].set_title("Signal")
+    # axs[0, 0].plot(t, s, color='C0')
+    # axs[0, 0].set_xlabel("Time")
     #axs[0, 0].set_ylabel("Amplitude")
     fig, ax = plt.subplots()
 
