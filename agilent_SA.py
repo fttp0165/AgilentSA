@@ -99,6 +99,45 @@ class Amptd:
         response = self.instr.query("POW:ATT:AUTO?")
         return response
 
+class Bw:
+    def __init__(self, instr):
+        self.instr = instr
+    
+    def set_res_bw(self,rbw='1',unit='K'):
+        #nuit = K,M
+        response = self.instr.write("BAND {} {}HZ".format(rbw,unit))
+        return response
+    
+    def get_res_bw(self):
+        response = self.instr.query('BAND?')
+        return response
+    
+    def set_res_bw_auto(self, states='ON'):
+        response = self.instr.write("BWID:AUTO {}".format(states))
+        return response
+
+    def get_res_bw_auto(self):
+        response = self.instr.query("BWID:AUTO?")
+        return response
+    
+    def set_video_bw(self,vbw='1',unit='k'):
+        #nuit = K,M
+        response = self.instr.write("BAND:VID {} {}HZ".format(vbw, unit))
+        return response
+    
+    def get_video_bw(self):
+        response = self.instr.query('BAND:VID?')
+        return response
+    
+    def set_video_bw_auto(self, states='ON'):
+        response = self.instr.write("BWID:VID:AUTO {}".format(states))
+        return response
+
+    def get_video_bw_auto(self):
+        response = self.instr.query("BWID:VID:AUTO?")
+        return response
+    
+
 
 class Fetch:
     def __init__(self):
@@ -140,9 +179,7 @@ class TraceDetector:
         response = self.instr.query("DET:TRAC{}?".format(trace))
         return response
 
-
-
-class AnalyzerSetUp(Freq, Span, Amptd, Fetch, TraceDetector):
+class AnalyzerSetUp(Freq, Span, Amptd, Fetch, TraceDetector,Bw):
     def __init__(self, instr):
         self.instr = instr
 
@@ -154,6 +191,8 @@ class AgilentSA(AnalyzerSetUp):
     def get_sa_mode(self):
         response=self.instr.query(':CONF?')
         return response
+
+
 
 def main():
     new_instr = AgilentSA(inst)
@@ -173,45 +212,63 @@ def main():
     new_instr.set_detector('1', 'AVER')
     print('get_detector:', new_instr.get_detector())
     print('get_detector:', new_instr.get_sa_mode())
+
+    print("get_res_bw",new_instr.get_res_bw())
+    new_instr.set_res_bw('100')
+    print("get_res_bw", new_instr.get_res_bw())
+    print("get_video_bw", new_instr.get_video_bw())
+    new_instr.set_video_bw('300')
+    print("get_video_bw", new_instr.get_video_bw())
+    # print("get_video_bw_auto", new_instr.get_video_bw_auto())
+    # print("get_res_bw_auto", new_instr.get_res_bw_auto())
+    # new_instr.set_res_bw_auto()
+    # new_instr.set_video_bw_auto()
+    # print("get_video_bw_auto", new_instr.get_video_bw_auto())
+    # print("get_res_bw_auto", new_instr.get_res_bw_auto())
+
+
+
     # new_instr.setMechAttenAuto()
     # print("getAttenuationStatus(1:ON,0:OFF):", new_instr.getMechAttenAuto())
     # print("getAttenuation:", float(new_instr.getMechAtten()), "dB")
-    trace = new_instr.fetch_data()
-    trace=trace.split(',')
-    print(trace)
-    amp = trace[1::2]
-    freq = trace[::2]
-    newFreq = []
-    newAmp = []
-    limitLine = []
+    # trace = new_instr.fetch_data()
+    # trace=trace.split(',')
+    # print(trace)
+    # amp = trace[1::2]
+    # freq = trace[::2]
+    # newFreq = []
+    # newAmp = []
+    # limitLine = []
     #print(freq)
     #print(amp)
-    for f in freq:
-        newFreq.append(float(f)/1000000)
-    for a in amp:
-        newAmp.append(float(a)+22)
-    print(len(newFreq))
-    print(len(newAmp))
+    # for f in freq:
+    #     newFreq.append(float(f)/1000000)
+    # for a in amp:
+    #     newAmp.append(float(a)+22)
+    # print(len(newFreq))
+    # print(len(newAmp))
     # axs[0, 0].set_title("Signal")
     # axs[0, 0].plot(t, s, color='C0')
     # axs[0, 0].set_xlabel("Time")
     #axs[0, 0].set_ylabel("Amplitude")
-    fig, ax = plt.subplots()
+    
+    #fig, ax = plt.subplots()
 
     #plt.grid(True)
-    ax.set(xlabel='freq', ylabel='amp (dBm)',
-           title='About as simple as it gets, folks')
-    xrange = (min(newFreq), max(newFreq))
-    yrange = (min(newAmp)-10, max(newAmp)+10)
-    for i in range(len(newFreq)):
-        limitLine.append(10.0)
+    #####################
+    # ax.set(xlabel='freq', ylabel='amp (dBm)',
+    #        title='About as simple as it gets, folks')
+    # xrange = (min(newFreq), max(newFreq))
+    # yrange = (min(newAmp)-10, max(newAmp)+10)
+    # for i in range(len(newFreq)):
+    #     limitLine.append(10.0)
 
-    ax.set_xlim(xrange)
-    ax.set_ylim(yrange)
-    ax.grid()
-    ax.plot(newFreq, newAmp)
-    ax.plot(newFreq, limitLine, color='red')
-    plt.show()
+    # ax.set_xlim(xrange)
+    # ax.set_ylim(yrange)
+    # ax.grid()
+    # ax.plot(newFreq, newAmp)
+    # ax.plot(newFreq, limitLine, color='red')
+    # plt.show()
 
 if __name__ == '__main__':
     main()
