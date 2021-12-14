@@ -179,11 +179,31 @@ class TraceDetector:
         response = self.instr.query("DET:TRAC{}?".format(trace))
         return response
 
-class AnalyzerSetUp(Freq, Span, Amptd, Fetch, TraceDetector,Bw):
+
+
+
+class Meas:
+    def __init__(self,instr):
+        self.instr = instr
+
+    def set_mode(self,mode):
+        if mode == 'CHP':
+            response = self.instr.write(":CONF:CHP")
+            return response
+            
+    def integ_bw(self,bw='20',unit='M'):
+        response = self.instr.write(":CHP:BAND:INT {}".format(bw)+"{}Hz".format(unit))
+        return response
+
+    def get_integ_bw(self):
+        response = self.instr.query(":CHP:BAND:INT?")
+        return response
+
+class AnalyzerSetUp(Freq, Span, Amptd, Fetch, TraceDetector, Bw, Meas):
     def __init__(self, instr):
         self.instr = instr
 
-
+    
 class AgilentSA(AnalyzerSetUp):
     def __init__(self, instr):
         self.instr = instr
@@ -219,6 +239,8 @@ def main():
     print("get_video_bw", new_instr.get_video_bw())
     new_instr.set_video_bw('300')
     print("get_video_bw", new_instr.get_video_bw())
+
+    new_instr.set_mode('CHP')
     # print("get_video_bw_auto", new_instr.get_video_bw_auto())
     # print("get_res_bw_auto", new_instr.get_res_bw_auto())
     # new_instr.set_res_bw_auto()
