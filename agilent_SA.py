@@ -202,8 +202,7 @@ class Meas:
 class AnalyzerSetUp(Freq, Span, Amptd, Fetch, TraceDetector, Bw, Meas):
     def __init__(self, instr):
         self.instr = instr
-
-    
+        
 class AgilentSA(AnalyzerSetUp):
     def __init__(self, instr):
         self.instr = instr
